@@ -1,0 +1,16 @@
+{
+    "20": [
+        "User logged in successfully",
+        "File uploaded successfully",
+        "Database connection established"
+    ],
+    "30": [
+        "User attempted to access restricted resource",
+        "Warning: Disk space running low"
+    ],
+    "40": [
+        "Error while processing payment",
+        "Database connection failed",
+        "Critical: Service is down"
+    ]
+}

@@ -1,0 +1,56 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fluent-bit
+  namespace: monitoring
+data:
+  fluent-bit.conf: |
+    [SERVICE]
+        Flush 1
+        Deamon Off
+        Log_Level info
+        Parsers_File parsers.conf
+        Plugin_File plugins.conf
+
+    [INPUT]
+        Name tail
+        Path /var/log/containers/*.log
+        Parser docker
+        Tag kube.*
+        Refresh_Interval 5
+
+    [FILTER]
+        Name kubernetes
+        Match kube.*
+        K8S-Logging.Parser On
+        K8S-Logging.Exclude Off
+        Merge_Log On
+
+    [OUTPUT]
+        Name                es
+        Match               kube.*
+        HOST                elasticsearch
+        Port                9200
+        Index               k8s_logs
+        Type                _doc
+        Logstash_Format     On
+        Retry_Limit         False
+        Buffer_Chunk_Size   1M
+        Buffer_Max_Size     5M
+        Skip_Long_Lines     On
+        Include_Tag_Key     On
+        Tag                 @log_name
+
+  parsers.conf: |
+    [PARSER]
+        Name          docker
+        Format        json
+        Time_Key      time
+        Time_Format   %Y-%m-%dT%H:%M:%S.%L
+        Time_Keep     On
+        Log_Key       log
+        Merge_Log     On
+
+    [PARSER]
+        Name      json
+        Format    json

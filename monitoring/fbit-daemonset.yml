@@ -38,7 +38,7 @@ spec:
           limits:
             memory: "1Gi"
             cpu: "1000m"
-      volume:
+      volumes:
       - name: varlog
         hostPath:
           path: /var/log
